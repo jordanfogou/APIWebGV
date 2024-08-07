@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace APIWebGV.Controllers
 {
     [ApiController]
-    [Route("Api/[controller]")]
+    [Route("api/[controller]")]
     public class GaragesController : Controller
     {
         private readonly GaragesAPIDbContext _dbContext;
@@ -49,6 +49,38 @@ namespace APIWebGV.Controllers
                 return NotFound();
             }
             return Ok(garage);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateGarage(Guid id, UpdateGarageRequest updateGarageRequest)
+        {
+            var garage = await _dbContext.Garages.FindAsync(id);
+            if (garage == null)
+            {
+                return NotFound();
+            }
+
+            garage.Nom = updateGarageRequest.Nom;
+            garage.Emplacement = updateGarageRequest.Emplacement;
+
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGarage(Guid id)
+        {
+            var garage = await _dbContext.Garages.FindAsync(id);
+            if (garage == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Garages.Remove(garage);
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

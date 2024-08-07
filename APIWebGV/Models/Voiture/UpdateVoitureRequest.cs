@@ -1,6 +1,6 @@
 ﻿namespace APIWebGV.Models.garage
 {
-    public class AddVoitureRequest
+    public class UpdateVoitureRequest
     {
         public string Marque { get; set; }
         public string Modele { get; set; }

@@ -1,6 +1,7 @@
-﻿using System;
+﻿using APIWebGV.Models.garage;
+using System;
 
-namespace APIWebGV.Models.garage
+namespace APIWebGV.Models.voiture
 {
     public class Voiture
     {
