@@ -4,33 +4,40 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Ajoutez les services DbContext pour les deux contextes
+builder.Services.AddDbContext<GaragesAPIDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("APIWebGVConnectionString")));
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<VoituresAPIDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("APIWebGVConnectionString")));
+
+// Ajouter des services au conteneur.
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<GaragesAPIDbContext>(options => options.UseInMemoryDatabase("GaragesDb"));
-builder.Services.AddDbContext<VoituresAPIDbContext>(options => options.UseInMemoryDatabase("VoituresDb"));
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurer le pipeline de requêtes HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
